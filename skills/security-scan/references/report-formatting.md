@@ -58,7 +58,7 @@ Do not report INFO findings.
 | | |
 |---|---|
 | **Mode** | ALL / default / filename |
-| **Files reviewed** | `File1.sol`<br>`File2.sol`<br>`File3.sol` |
+| **Files reviewed** | `File1.sol` · `File2.sol`<br>`File3.sol` · `File4.sol` |
 | **Confidence threshold** | N |
 | **False positives skipped** | N |
 | **Below threshold** | N |
