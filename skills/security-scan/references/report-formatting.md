@@ -12,8 +12,8 @@ Open the report with this disclaimer block, verbatim:
 
 | Severity | Emoji | Criteria |
 |---|---|---|
-| **CRITICAL** | 🔴 | Direct theft or permanent loss/freeze of user or protocol funds; full protocol takeover; governance capture that gives an attacker unilateral control. |
-| **HIGH** | 🟠 | Significant financial loss through realistic attack paths; temporary freeze of user funds; theft of unclaimed yield or rewards; loss of core protocol functionality. |
+| **CRITICAL** | ⛔ | Direct theft or permanent loss/freeze of user or protocol funds; full protocol takeover; governance capture that gives an attacker unilateral control. |
+| **HIGH** | 🔴 | Significant financial loss through realistic attack paths; temporary freeze of user funds; theft of unclaimed yield or rewards; loss of core protocol functionality. |
 | **MEDIUM** | 🟡 | Limited or conditional financial impact requiring specific preconditions; DoS or griefing that causes disruption without direct profit; protocol misbehavior under edge conditions. |
 | **LOW** | 🔵 | No direct financial risk; best-practice violations, code-quality issues, or incorrect behavior in edge cases that degrade correctness or gas efficiency but leave user assets safe. |
 
