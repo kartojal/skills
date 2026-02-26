@@ -16,9 +16,12 @@ Built for **developers** who want to catch issues early - not a replacement for 
 # Review the entire repo
 /security-scan ALL
 
-# Fast mode - CRITICAL/HIGH only, under 1 minute (combinable with any of the above)
-/security-scan --fast
-/security-scan --fast src/Vault.sol
+# Time-limited scan (in seconds) - adjusts scope and depth to fit the budget
+/security-scan --max-run-time=30   # CRITICAL only, 2 files max, built-in vectors
+/security-scan --max-run-time=60   # CRITICAL + HIGH, 5 files max (alias: --fast)
+/security-scan --max-run-time=120  # CRITICAL + HIGH + MEDIUM, all files
+/security-scan --max-run-time=300  # all severities, reads full attack vector reference
+/security-scan --fast              # alias for --max-run-time=60
 
 # Confidence threshold - only report findings at or above N/100 (default: 80)
 /security-scan --confidence=65    # broader sweep, includes more uncertain findings
