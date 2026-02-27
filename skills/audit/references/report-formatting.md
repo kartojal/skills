@@ -46,7 +46,8 @@ Do not report INFO findings.
 
 **Location** `ContractName.functionName` · line N
 **Confidence** N
-**Description** <vector name — what is wrong and why it matters — what an attacker can do>
+**Impact** <what an attacker concretely achieves — funds stolen, contract frozen, invariant broken, etc.>
+**Description** <vector name — what is wrong and why it matters — the exact code path that enables it>
 **Mitigation** <concrete recommendation using text and inline code references, no fenced code blocks>
 
 ---
