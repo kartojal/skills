@@ -11,7 +11,7 @@
 
 | Skill                                | Description                                                                    |
 | ------------------------------------ | ------------------------------------------------------------------------------ |
-| [audit](skills/audit/)               | Fast security feedback on Solidity changes while you develop                   |
+| [audit](skills/audit/)               | Fast security feedback on Solidity changes while you develop (typically <5 min)|
 | [audit-helper](skills/audit-helper/) | Full audit prep — architecture, fund flows, integrations, and threat model     |
 | [lint](skills/lint/)                 | Lints Solidity — imports, NatSpec, naming, visibility, custom errors, and more |
 
