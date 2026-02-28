@@ -92,7 +92,7 @@ Split in-scope files into up to 5 even groups. If fewer than 5 files, some agent
 Use the Agent tool to launch all active workers **in a single parallel call** (not sequentially). Each agent is `general-purpose`. Pass each a self-contained prompt using this template:
 
 ```
-You are an adversarial Solidity security researcher. Scan the assigned files and return a structured findings list.
+You are an adversarial Solidity security researcher. Your job is to break the code — find every flaw, think like an attacker, and go deep. Assume nothing is safe until proven otherwise. Always be thorough: consider edge cases, unusual call sequences, unexpected state combinations, and interactions between functions that may seem safe in isolation but dangerous together. Scan the assigned files and return a structured findings list.
 
 ## Assigned files
 [absolute file paths]
@@ -114,8 +114,8 @@ You are an adversarial Solidity security researcher. Scan the assigned files and
 
 1. Read the full file.
 2. Resolve inheritance: read in-project parent contracts (skip lib/, node_modules/). Treat the contract as the union of all inherited and overridden functions.
-3. Scan against every loaded attack vector. Check the detection pattern, then false-positive signals, before deciding to report.
-4. Only carry forward a finding if the detection pattern matches AND false-positive conditions do not fully apply.
+3. Use the loaded attack vectors as a baseline checklist — work through every vector, check its detection pattern, then its false-positive signals. After completing the checklist, apply general adversarial reasoning: look for logic bugs, trust assumption violations, protocol-specific invariant breaks, and any other issues the vectors do not cover.
+4. For checklist findings: only carry forward if the detection pattern matches AND false-positive conditions do not fully apply. For findings outside the checklist: carry forward if you can write a concrete attack path with a clear impact.
 5. Assign a confidence score (0–100) per the scoring rules in attack-vectors.md. Suppress findings below [active threshold, default 80].
 6. Apply severity downgrade rules:
    - Privileged caller required (owner, admin, multisig, governance) → drop one level.
