@@ -9,11 +9,11 @@
 
 ## Skills
 
-| Skill                                | Description                                                                                      | Category           |
-| ------------------------------------ | ------------------------------------------------------------------------------------------------ | ------------------ |
-| [audit](skills/audit/)               | Fast security feedback on Solidity changes while you develop                                     | Secure Development |
-| [audit-helper](skills/audit-helper/) | Full audit prep for security researchers - builds, architecture diagrams, threat model           | Security Research  |
-| [lint](skills/lint/)                 | Lints Solidity code - unused imports, NatSpec, formatting, naming, custom errors, best practices | Secure Development |
+| Skill                                | Description                                                                    |
+| ------------------------------------ | ------------------------------------------------------------------------------ |
+| [audit](skills/audit/)               | Fast security feedback on Solidity changes while you develop                   |
+| [audit-helper](skills/audit-helper/) | Full audit prep — architecture, fund flows, integrations, and threat model     |
+| [lint](skills/lint/)                 | Lints Solidity — imports, NatSpec, naming, visibility, custom errors, and more |
 
 ---
 
