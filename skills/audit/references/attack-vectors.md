@@ -1,6 +1,6 @@
 # Attack Vectors Reference
 
-65 attack vectors. For each: detection pattern (what to look for in code) and false-positive signals (what makes it NOT a vulnerability even if the pattern matches).
+66 attack vectors. For each: detection pattern (what to look for in code) and false-positive signals (what makes it NOT a vulnerability even if the pattern matches).
 
 ---
 
@@ -328,3 +328,8 @@
 
 - **Detect:** Arithmetic expression operates on `uint8`, `uint16`, `uint32`, `int8`, or other sub-256-bit types before the result is assigned to a wider type. Pattern: `uint256 result = a * b` where `a` and `b` are `uint8` — multiplication executes in `uint8` and overflows silently (wraps mod 256) before widening. Also: ternary returning a small literal `(condition ? 1 : 0)` inferred as `uint8`; addition `uint16(x) + uint16(y)` assigned to `uint32`. Underflow possible for signed sub-types.
 - **FP:** Each operand is explicitly upcast before the operation: `uint256(a) * uint256(b)`. SafeCast used. Solidity 0.8+ overflow protection applies only within the type of the expression — if both operands are `uint8`, the check is still on `uint8` range, not `uint256`.
+
+**66. Front-Running Exact-Zero Balance Check with Dust Transfer**
+
+- **Detect:** An `external` or `public` function contains `require(token.balanceOf(address(this)) == 0)`, `require(address(this).balance == 0)`, or any strict equality check against a zero balance that gates a state transition (e.g., starting an auction, initializing a pool, opening a deposit round). An attacker front-runs the legitimate caller's transaction by sending a dust amount of the token or ETH to the contract, making the balance non-zero and causing the victim's transaction to revert. The attack is repeatable at negligible cost, creating a permanent DoS on the guarded function. Distinct from Vector 41 (force-feeding ETH to break invariants) — this targets the zero-check gate itself as a griefing/DoS vector rather than inflating a balance used in financial math.
+- **FP:** Check uses `<=` threshold instead of `== 0` (e.g., `require(balance <= DUST_THRESHOLD)`). Function is access-controlled so only a trusted caller can trigger it. Balance is tracked via an internal accounting variable that ignores direct transfers, not via `balanceOf` or `address(this).balance`.

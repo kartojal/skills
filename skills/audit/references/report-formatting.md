@@ -41,7 +41,7 @@ CRITICAL and HIGH are rare. If you have more than one, re-examine each before re
 |                                  |                                                        |
 | -------------------------------- | ------------------------------------------------------ |
 | **Mode**                         | ALL / default / filename                               |
-| **Files reviewed**               | `File1.sol` · `File2.sol`<br>`File3.sol` · `File4.sol` |
+| **Files reviewed**               | `File1.sol` · `File2.sol`<br>`File3.sol` · `File4.sol` | <!-- list every file, 3 per line -->
 | **Confidence threshold (1-100)** | N                                                      |
 
 ---
