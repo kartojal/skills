@@ -183,7 +183,7 @@ The most valuable contributions are targeted improvements to existing skills:
 - **One skill, one purpose.** A skill that does two unrelated things should be two skills.
 - **No fabricated examples.** Outputs in documentation must reflect real model responses, not idealized ones.
 - **No secrets or personal data.** No API keys, tokens, wallet addresses, internal hostnames, or anything sensitive.
-- **Agent-agnostic by default.** Skills must work across Claude Code, Codex, GitHub Copilot, Cursor, and Windsurf. Agent-specific sections (e.g., model selection, extended thinking) are allowed when clearly marked and documented.
+- **Claude and Claude Code only.** Skills are designed for Claude models running in Claude Code, within VS Code or Cursor.
 - **Honest about scope.** If a skill only works well for Foundry projects, say so clearly. Do not overstate capability.
 - **Constraints are mandatory.** Every skill instruction body must include explicit constraints — what the agent must not do, must not report, must not fabricate.
 
@@ -202,7 +202,7 @@ The most valuable contributions are targeted improvements to existing skills:
 - [ ] `README.md` documents usage with at least one real example
 - [ ] Reference files (if any) contain only real, tested content — no fabricated outputs
 - [ ] No API keys, tokens, or sensitive data anywhere in the skill
-- [ ] Skill works with at least one agent listed in the repo's supported matrix
+- [ ] Skill works with Claude Code in VS Code or Cursor
 
 ---
 

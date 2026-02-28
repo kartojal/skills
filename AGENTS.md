@@ -4,7 +4,7 @@ Instructions for AI coding agents contributing to this repository.
 
 ## What This Repo Is
 
-A community library of agent-agnostic AI skills. Each skill is a focused, self-contained capability that works across Claude Code, Codex, Copilot, Cursor, Windsurf, and other agents.
+A library of Claude AI skills. Each skill is a focused, self-contained capability for Claude Code in VS Code and Cursor.
 
 ## Structure
 
