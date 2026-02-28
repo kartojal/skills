@@ -1,6 +1,6 @@
 # Attack Vectors Reference
 
-68 attack vectors. For each: detection pattern (what to look for in code) and false-positive signals (what makes it NOT a vulnerability even if the pattern matches).
+67 attack vectors. For each: detection pattern (what to look for in code) and false-positive signals (what makes it NOT a vulnerability even if the pattern matches).
 
 ---
 
@@ -314,33 +314,27 @@
 - **Detect:** Merkle proof accepted without tying the leaf to `msg.sender`. Pattern: `require(MerkleProof.verify(proof, root, keccak256(abi.encodePacked(amount))))` or leaf contains only an address that is not checked against `msg.sender`. Anyone who observes the proof in the mempool can front-run and claim the same entitlement by submitting it from a different address.
 - **FP:** Leaf explicitly encodes the caller: `keccak256(abi.encodePacked(msg.sender, amount))`. Function validates that the leaf's embedded address equals `msg.sender` before acting. Proof is single-use and recorded as consumed after the first successful call.
 
-**63. Sensitive Data in `private` State Variable**
-
-- **Detect:** State variable marked `private` or `internal` stores a secret value — private key, seed, password, cryptographic secret, or hidden game answer. Pattern: `uint256 private secretKey;`, `bytes32 private _seed;`, `uint8 private answer;`. All Ethereum state is publicly readable via `eth_getStorageAt` regardless of visibility; the Solidity `private` keyword only prevents other contracts from reading the variable — it does not encrypt or hide it from off-chain observers.
-- **FP:** Variable contains non-secret data (a counter, a cached sum) where Solidity visibility is used correctly as a code-organisation tool. Secret is generated via commit-reveal so the on-chain value is a hash of the secret, not the secret itself. Value is a public immutable constant.
-
-**64. Diamond Proxy Cross-Facet Storage Collision**
+**63. Diamond Proxy Cross-Facet Storage Collision**
 
 - **Detect:** EIP-2535 Diamond proxy where two or more facets declare storage variables without EIP-7201 namespaced storage structs — each facet using plain `uint256 foo` or `mapping(...)` declarations that Solidity places at sequential storage slots 0, 1, 2, …. Different facets independently start at slot 0, so both write to the same slot. Also flag: facet uses a library that writes to storage without EIP-7201 namespacing.
 - **FP:** All facets store state exclusively in a single `DiamondStorage` struct retrieved via `assembly { ds.slot := DIAMOND_STORAGE_POSITION }` using a namespaced position (EIP-7201 formula). No facet declares top-level state variables. OpenZeppelin's ERC-7201 `@custom:storage-location` pattern used correctly.
 
-**65. Nested Mapping Inside Struct Not Cleared on `delete`**
+**64. Nested Mapping Inside Struct Not Cleared on `delete`**
 
 - **Detect:** `delete myMapping[key]` or `delete myArray[i]` where the deleted item is a struct containing a `mapping` or a dynamic array. Solidity's `delete` zeroes primitive fields but does not recursively clear mappings — the nested mapping's entries persist in storage. If the same key is later reused (e.g., a re-deposited user, re-created proposal), old mapping values are unexpectedly visible. Pattern: struct with `mapping(address => uint256)` or `uint256[]` field; `delete` called on the struct without manually iterating and clearing the nested mapping.
 - **FP:** Nested mapping manually cleared before `delete` (iterate and zero every entry). Struct key is never reused after deletion. Codebase explicitly accounts for residual mapping values in subsequent reads (always initialises before use).
 
-**66. Small-Type Arithmetic Overflow Before Upcast**
+**65. Small-Type Arithmetic Overflow Before Upcast**
 
 - **Detect:** Arithmetic expression operates on `uint8`, `uint16`, `uint32`, `int8`, or other sub-256-bit types before the result is assigned to a wider type. Pattern: `uint256 result = a * b` where `a` and `b` are `uint8` — multiplication executes in `uint8` and overflows silently (wraps mod 256) before widening. Also: ternary returning a small literal `(condition ? 1 : 0)` inferred as `uint8`; addition `uint16(x) + uint16(y)` assigned to `uint32`. Underflow possible for signed sub-types.
 - **FP:** Each operand is explicitly upcast before the operation: `uint256(a) * uint256(b)`. SafeCast used. Solidity 0.8+ overflow protection applies only within the type of the expression — if both operands are `uint8`, the check is still on `uint8` range, not `uint256`.
 
-**67. ERC-1363 onTransferReceived / onApprovalReceived Missing Token Address Check**
+**66. Swap-and-Pop Invalidates Index-Based External References**
 
-- **Detect:** Contract implements `IERC1363Receiver.onTransferReceived(address,address,uint256,bytes)` or `IERC1363Spender.onApprovalReceived(address,uint256,bytes)` but does not verify that `msg.sender` is the expected ERC-1363 token address. Because these callbacks are `external` and callable by anyone, an attacker can call them directly with forged `from`, `amount`, or `data` arguments to simulate a token transfer or approval that never happened — crediting balances, unlocking gates, or triggering state changes without any real token movement.
-- **FP:** First line of the callback is `require(msg.sender == address(expectedToken), "wrong token")`. Expected token stored as an `immutable` set in the constructor. Only whitelisted token addresses are trusted.
+- **Detect:** Array element removed via swap-and-pop (`arr[i] = arr[arr.length - 1]; arr.pop()`) while a parallel `mapping(address => uint256)` or similar structure stores index positions for elements. After the swap, the last element now sits at index `i`, but the mapping still records its old index (`arr.length - 1`). Any lookup through the mapping retrieves the wrong entry. Pattern: `ownerToIndex[item.owner] = i` or `idToIndex[id] = i` without updating the swapped element's mapping entry after the swap.
+- **FP:** Index mapping updated atomically after every swap: `indexMap[arr[i].id] = i` executed immediately after `arr[i] = arr[arr.length - 1]`. No external mapping tracks array indices — callers locate elements by value, not position. Array ordering is explicitly documented as unstable.
 
-**68. Single-Step Ownership Transfer (Ownable Without Ownable2Step)**
+**67. `delete arr[i]` Leaves Zero-Value Ghost Entry**
 
-- **Detect:** Contract uses OpenZeppelin `Ownable` (or a custom equivalent) that transfers ownership in a single `transferOwnership(address)` call with no confirmation step. A typo or wrong address permanently transfers control — the new address instantly becomes owner with no way to reverse. Pattern: inherits `Ownable` but not `Ownable2Step`; `transferOwnership` is not overridden to require acceptance; critical protocol functions gated on `onlyOwner`.
-- **FP:** Contract inherits `Ownable2Step` — new owner must call `acceptOwnership()` to confirm. Multi-sig is the current owner (human error still possible but raises bar). `renounceOwnership` overridden to revert (prevents accidental lock). Contract is intentionally abandoned / ownership deliberately renounceable by design.
-
+- **Detect:** `delete arr[i]` zeroes the element at index `i` but does not shrink the array (`arr.length` is unchanged). If the array is later iterated — for reward distribution, vote tallying, fee splitting, or participant counting — the zero entry is processed as a real (empty) participant: `total / arr.length` undercounts per-share payout; zero-address recipients receive ETH or tokens; division by stale length produces incorrect results. Pattern: `delete participants[i]` or `delete balances[i]` without a follow-up `arr[i] = arr[arr.length-1]; arr.pop()`.
+- **FP:** Array length is never used as a divisor or participant count after deletion. Zero-value entries are explicitly skipped (`if (arr[i] == 0) continue`). Swap-and-pop used instead of `delete arr[i]`. Fixed-size arrays where zeroing is the intended sentinel.
