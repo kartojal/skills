@@ -5,14 +5,7 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 [![Contributions Welcome](https://img.shields.io/badge/contributions-welcome-brightgreen.svg)](CONTRIBUTING.md)
 
-Drop a skill into your Claude Code environment and it gains a focused, reusable capability - like a plugin, but for Claude.
-
-|                | Supported         |
-| -------------- | ----------------- |
-| **Models**     | Claude            |
-| **Agents**     | Claude Code       |
-| **IDEs**       | VS Code · Cursor  |
-| **Extensions** | Claude Code       |
+Drop a skill into Claude Code and it gains a focused, reusable capability — works in VS Code and Cursor.
 
 ---
 
