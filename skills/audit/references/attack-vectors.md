@@ -1,6 +1,6 @@
 # Attack Vectors Reference
 
-67 attack vectors. For each: detection pattern (what to look for in code) and false-positive signals (what makes it NOT a vulnerability even if the pattern matches).
+65 attack vectors. For each: detection pattern (what to look for in code) and false-positive signals (what makes it NOT a vulnerability even if the pattern matches).
 
 ---
 
@@ -328,13 +328,3 @@
 
 - **Detect:** Arithmetic expression operates on `uint8`, `uint16`, `uint32`, `int8`, or other sub-256-bit types before the result is assigned to a wider type. Pattern: `uint256 result = a * b` where `a` and `b` are `uint8` — multiplication executes in `uint8` and overflows silently (wraps mod 256) before widening. Also: ternary returning a small literal `(condition ? 1 : 0)` inferred as `uint8`; addition `uint16(x) + uint16(y)` assigned to `uint32`. Underflow possible for signed sub-types.
 - **FP:** Each operand is explicitly upcast before the operation: `uint256(a) * uint256(b)`. SafeCast used. Solidity 0.8+ overflow protection applies only within the type of the expression — if both operands are `uint8`, the check is still on `uint8` range, not `uint256`.
-
-**66. Swap-and-Pop Invalidates Index-Based External References**
-
-- **Detect:** Array element removed via swap-and-pop (`arr[i] = arr[arr.length - 1]; arr.pop()`) while a parallel `mapping(address => uint256)` or similar structure stores index positions for elements. After the swap, the last element now sits at index `i`, but the mapping still records its old index (`arr.length - 1`). Any lookup through the mapping retrieves the wrong entry. Pattern: `ownerToIndex[item.owner] = i` or `idToIndex[id] = i` without updating the swapped element's mapping entry after the swap.
-- **FP:** Index mapping updated atomically after every swap: `indexMap[arr[i].id] = i` executed immediately after `arr[i] = arr[arr.length - 1]`. No external mapping tracks array indices — callers locate elements by value, not position. Array ordering is explicitly documented as unstable.
-
-**67. `delete arr[i]` Leaves Zero-Value Ghost Entry**
-
-- **Detect:** `delete arr[i]` zeroes the element at index `i` but does not shrink the array (`arr.length` is unchanged). If the array is later iterated — for reward distribution, vote tallying, fee splitting, or participant counting — the zero entry is processed as a real (empty) participant: `total / arr.length` undercounts per-share payout; zero-address recipients receive ETH or tokens; division by stale length produces incorrect results. Pattern: `delete participants[i]` or `delete balances[i]` without a follow-up `arr[i] = arr[arr.length-1]; arr.pop()`.
-- **FP:** Array length is never used as a divisor or participant count after deletion. Zero-value entries are explicitly skipped (`if (arr[i] == 0) continue`). Swap-and-pop used instead of `delete arr[i]`. Fixed-size arrays where zeroing is the intended sentinel.

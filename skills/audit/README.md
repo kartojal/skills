@@ -30,7 +30,7 @@ For **developers writing Solidity** who want a security gut-check as part of the
 - **File mode**: reviews a single contract you specify
 - **ALL mode**: scans the full repo at its current state
 
-Every run reads a tiered attack checklist before scanning: 67 core vectors (including all ERC20 checks, which always apply), plus token-standard-specific vectors loaded on demand (11 ERC721, 10 ERC1155, 8 ERC4626, 7 ERC4337) — only the standards actually present in the code are loaded. Beyond the checklist, the model applies its own security analysis to catch project-specific logic bugs and unusual vulnerability combinations that don't map to any named vector. Findings below the confidence threshold are suppressed — the report stays signal, not noise.
+Every run reads a tiered attack checklist before scanning: 65 core vectors (including all ERC20 checks, which always apply), plus token-standard-specific vectors loaded on demand (11 ERC721, 10 ERC1155, 8 ERC4626, 7 ERC4337) — only the standards actually present in the code are loaded. Beyond the checklist, the model applies its own security analysis to catch project-specific logic bugs and unusual vulnerability combinations that don't map to any named vector. Findings below the confidence threshold are suppressed — the report stays signal, not noise.
 
 ## Giving it project context
 

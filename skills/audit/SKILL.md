@@ -18,7 +18,7 @@ Always read the core attack vector reference before scanning:
 references/attack-vectors.md
 ```
 
-It contains 67 attack vectors with precise detection patterns and false-positive signals. ERC20 vectors are included here and always checked.
+It contains 65 attack vectors with precise detection patterns and false-positive signals. ERC20 vectors are included here and always checked.
 
 Additional token-standard-specific vector files exist for less universal standards. After reading the files in scope, detect which of these standards are used (search for imports or interface names). For each found, also read its dedicated vector file:
 
