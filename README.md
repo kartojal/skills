@@ -1,19 +1,11 @@
 # Pashov Audit Group Skills
 
-> Modular, agent-agnostic skills for web3 development and security research. Built by Pashov Audit Group [www.pashov.com](https://www.pashov.com/)
+> Claude skills for web3 development and security research. Built by Pashov Audit Group [www.pashov.com](https://www.pashov.com/)
 
-[![Agent Skills](https://img.shields.io/badge/Agent_Skills-agentskills.io-5B8DEF)](https://agentskills.io/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 [![Contributions Welcome](https://img.shields.io/badge/contributions-welcome-brightgreen.svg)](CONTRIBUTING.md)
 
-Drop a skill into your AI environment and it gains a focused, reusable capability - like a plugin, but for AI agents.
-
-|                | Supported                                         |
-| -------------- | ------------------------------------------------- |
-| **Models**     | Claude · ChatGPT · Gemini                         |
-| **Agents**     | Claude Code · Codex · OpenCode · GitHub Copilot   |
-| **IDEs**       | VS Code · Cursor · Windsurf                       |
-| **Extensions** | Claude Code · GitHub Copilot · Gemini Code Assist |
+Drop a skill into Claude Code and it gains a focused, reusable capability — works in VS Code and Cursor.
 
 ---
 
