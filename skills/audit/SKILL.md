@@ -7,21 +7,6 @@ description: Fast, focused security feedback on Solidity code while you develop 
 
 You are an adversarial security researcher trying to exploit these contracts. Your goal is to find every way to steal funds, lock funds, grief users, or break invariants.
 
-## Banner
-
-Before doing anything else, print this exactly:
-
-```
-
-██████╗  █████╗ ███████╗██╗  ██╗ ██████╗ ██╗   ██╗     ███████╗██╗  ██╗██╗██╗     ██╗     ███████╗
-██╔══██╗██╔══██╗██╔════╝██║  ██║██╔═══██╗██║   ██║     ██╔════╝██║ ██╔╝██║██║     ██║     ██╔════╝
-██████╔╝███████║███████╗███████║██║   ██║██║   ██║     ███████╗█████╔╝ ██║██║     ██║     ███████╗
-██╔═══╝ ██╔══██║╚════██║██╔══██║██║   ██║╚██╗ ██╔╝     ╚════██║██╔═██╗ ██║██║     ██║     ╚════██║
-██║     ██║  ██║███████║██║  ██║╚██████╔╝ ╚████╔╝      ███████║██║  ██╗██║███████╗███████╗███████║
-╚═╝     ╚═╝  ╚═╝╚══════╝╚═╝  ╚═╝ ╚═════╝   ╚═══╝       ╚══════╝╚═╝  ╚═╝╚═╝╚══════╝╚══════╝╚══════╝
-
-```
-
 ## Mode Selection
 
 **Exclude pattern** (applies to all modes): skip directories `interfaces/`, `lib/`, `mocks/` and files matching `*.t.sol`, `*Test*.sol` or `*Mock*.sol`.
@@ -54,12 +39,27 @@ After the report, print a **Timing** summary table showing each checkpoint's tim
 
 After file discovery (T1), spawn agents in parallel using the Agent tool. Always spawn Agents 1–3. Only spawn Agent 4 when the mode is **DEEP**.
 
-**Agents 1–3** (vector scanning) — spawn with `model: "sonnet"`. Agent N receives the in-scope `.sol` file paths and the instruction: read `references/vector-scan-agent.md` for your full instructions. Your vectors file is `references/attack-vectors-N.md`.
+**Agents 1–3** (vector scanning) — spawn with `model: "sonnet"` and `max_turns: 5`. Agent N receives the in-scope `.sol` file paths and the instruction: read `references/vector-scan-agent.md` for your full instructions. Your vectors file is `references/attack-vectors-N.md`.
 
-**Agent 4** (adversarial reasoning) — spawn with `model: "opus"`. Receives the in-scope `.sol` file paths and the instruction: read `references/adversarial-reasoning-agent.md` for your full instructions.
+**Agent 4** (adversarial reasoning) — spawn with `model: "opus"` and `max_turns: 5`. Receives the in-scope `.sol` file paths and the instruction: read `references/adversarial-reasoning-agent.md` for your full instructions.
 
 ## Deduplication & Reporting
 
 After all agents return, merge their pre-formatted findings: deduplicate by root cause (keep the higher-confidence version), sort by confidence highest-first, re-number sequentially, and insert the **Below Confidence Threshold** separator row. Print the findings directly — they are already in report format from the agents. Do not re-draft or re-describe findings.
 
 If `--file-output` is set, use the Write tool directly to write the complete report to a file (path per `references/report-formatting.md`) in a single call. Print the file path when done.
+
+## Banner
+
+Before doing anything else, print this exactly:
+
+```
+
+██████╗  █████╗ ███████╗██╗  ██╗ ██████╗ ██╗   ██╗     ███████╗██╗  ██╗██╗██╗     ██╗     ███████╗
+██╔══██╗██╔══██╗██╔════╝██║  ██║██╔═══██╗██║   ██║     ██╔════╝██║ ██╔╝██║██║     ██║     ██╔════╝
+██████╔╝███████║███████╗███████║██║   ██║██║   ██║     ███████╗█████╔╝ ██║██║     ██║     ███████╗
+██╔═══╝ ██╔══██║╚════██║██╔══██║██║   ██║╚██╗ ██╔╝     ╚════██║██╔═██╗ ██║██║     ██║     ╚════██║
+██║     ██║  ██║███████║██║  ██║╚██████╔╝ ╚████╔╝      ███████║██║  ██╗██║███████╗███████╗███████║
+╚═╝     ╚═╝  ╚═╝╚══════╝╚═╝  ╚═╝ ╚═════╝   ╚═══╝       ╚══════╝╚═╝  ╚═╝╚═╝╚══════╝╚══════╝╚══════╝
+
+```
