@@ -21,23 +21,9 @@ You are the orchestrator of a parallelized smart contract security review. Your 
 - `--confidence=N` (default `75`): minimum confidence score (0–100) a finding must reach to be reported. Lower = wider net, more false positives. Higher = tighter report, near-certain issues only.
 - `--file-output` (off by default): also write the report to a markdown file (path per `references/report-formatting.md`). Without this flag, output goes to the terminal only. Never write a report file unless the user explicitly passes `--file-output`.
 
-## Execution
-
-Print `⏱ [HH:MM:SS]` timestamps (via `date +%H:%M:%S`) at each of these checkpoints:
-
-| Tag         | When                                                      |
-| ----------- | --------------------------------------------------------- |
-| `T0 Start`  | After banner, before any work                             |
-| `T1 Scope`  | After file discovery                                      |
-| `T2 Scan`   | After all scanning agents return                          |
-| `T2.N`      | After every 3 findings drafted (see report-formatting.md) |
-| `T3 Report` | After report file written (only when `--file-output`)     |
-
-After the report, print a **Timing** summary table showing each checkpoint's timestamp and the duration (mm:ss) from the previous checkpoint.
-
 ## Agent Spawning
 
-After file discovery (T1), spawn agents in parallel using the Agent tool. Always spawn Agents 1–4. Only spawn Agent 5 when the mode is **DEEP**.
+After file discovery, spawn agents in parallel using the Agent tool. Always spawn Agents 1–4. Only spawn Agent 5 when the mode is **DEEP**.
 
 **Agents 1–4** (vector scanning) — spawn with `model: "sonnet"` and `max_turns: 7`. Agent N receives the in-scope `.sol` file paths and the instruction: read `references/vector-scan-agent.md` for your full instructions. Your vectors file is `references/attack-vectors-N.md`.
 
