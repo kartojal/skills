@@ -1,35 +1,47 @@
 # audit
 
-For **developers writing Solidity** who want a security gut-check as part of their normal workflow. Fast, focused security feedback while developing or before committing - not a replacement for a formal audit, but the check you should run every time you touch a contract.
+For **Solidity developers** who want a security gut-check as part of their normal workflow. Fast, focused security feedback while developing or before committing - not a replacement for a formal audit, but the check you should run every time you touch a contract.
 
 ## Usage
 
 ```bash
-# Review only what changed (default)
+# Scan the full repo (default)
 /audit
 
-# Review a specific file
+# Review only changed files
+/audit diff
+
+# Full repo + adversarial reasoning agent (slower, more thorough)
+/audit deep
+
+# Review specific file(s)
 /audit src/Vault.sol
-
-# Review the entire repo
-/audit ALL
-
-# Confidence threshold - only report findings at or above N/100 (default: 75)
-/audit --confidence=55    # broader sweep, includes more uncertain findings
-/audit --confidence=95    # tight report, near-certain issues only
+/audit src/Vault.sol src/Router.sol
 
 # Write report to a markdown file (terminal-only by default)
-/audit ALL --file-output
+/audit --file-output
 ```
 
 ## What it does
 
-- **Default mode**: runs `git diff HEAD` and reviews only the `.sol` files you've changed
-- **File mode**: reviews a single contract you specify
-- **ALL mode**: scans the full repo (excludes `lib/`, `mocks/`, `*.t.sol`, `*Test*.sol`, `*Mock*.sol`)
+- **Default mode**: scans all `.sol` files in the repo (excludes `interfaces/`, `lib/`, `mocks/`, `*.t.sol`, `*Test*.sol`, `*Mock*.sol`)
+- **diff mode**: runs `git diff HEAD` and reviews only the `.sol` files you've changed
+- **deep mode**: same scope as default, but adds an adversarial reasoning agent (Opus) alongside the vector scanners
+- **File mode**: reviews one or more contracts you specify
 
-Every run reads a tiered attack checklist before scanning: 65 core vectors, plus token-standard-specific vectors loaded on demand (11 ERC721, 10 ERC1155, 8 ERC4626, 7 ERC4337) — only the standards actually present in the code are loaded. Beyond the checklist, the model applies adversarial reasoning to catch project-specific logic bugs that don't map to any named vector. Findings below the confidence threshold are suppressed into a summary table. With `--file-output`, the full report is saved to `assets/findings/`.
+Every run spawns 4 parallel scanning agents, each armed with a subset of 125 attack vectors covering reentrancy, access control, token standards, flash loans, integer issues, and more. Each agent triages its vectors against the codebase, then deep-analyzes only the survivors. Findings below the confidence threshold (75) are listed in the summary table but get no fix block. With `--file-output`, the full report is saved to `assets/findings/`.
 
-## Performance
+## Why deep mode
 
-Most runs complete in under 5 minutes. Larger or more complex codebases (more files, more lines of code) take longer — the bulk of the time is spent in the analysis phase where each attack vector is checked against every in-scope file.
+In deep mode, a fifth agent (Opus) reasons adversarially from first principles — no checklist, just "find every way to steal funds, lock funds, grief users, or break invariants." It costs more tokens and can take more time, but consistently finds vulnerabilities that the vector scanners miss. Use it for pre-commit reviews on critical code or when preparing for a formal audit.
+
+## Performance & Token Spend
+
+Most runs complete in 3–5 minutes. Wall-clock is determined by the slowest agent, not the sum of all agents.
+
+Expect ~100k–250k tokens depending on scope (200–2,000 lines of Solidity). DEEP mode adds ~25-30% on top. Token spend scales with the number of in-scope files — each scanning agent reads every file, so a single-file review will use significantly fewer tokens.
+
+Estimated API cost at current Anthropic pricing (~70% input / 30% output):
+
+- **Default mode**: ~$0.65 (small) to ~$1.65 (large)
+- **DEEP mode**: ~$1.30 (small) to ~$3.30 (large)
