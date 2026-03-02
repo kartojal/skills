@@ -35,6 +35,8 @@ cp -r skills/audit .claude/commands/
 
 The skill is then invocable as `/audit`. Replace `audit` with any skill name from the table above.
 
+> **Tip:** Open a second terminal on the side, run `/audit` there, and keep coding in your main terminal. A typical run takes ~5 minutes.
+
 ---
 
 ## Contributing · Security · License
