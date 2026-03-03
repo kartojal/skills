@@ -43,4 +43,4 @@ Expect ~100k–250k tokens depending on scope (200–2,000 lines of Solidity). D
 
 ## Limitations
 
-Performance degrades on codebases exceeding ~4,000 lines of in-scope Solidity. Agents hit context limits, findings get less precise, and token costs spike. For large codebases, run the skill on logical chunks (e.g., per module or per contract group) rather than the full repo in a single pass — you'll get better coverage and more actionable results.
+**Codebase size.** Each agent reads all in-scope code in a single pass, then analyzes from memory — no re-reads. This works well up to ~2,500 lines of Solidity, where triage and recall are near-lossless. Past that threshold, two things degrade: the agent's ability to remember whether a specific pattern exists in the code (triage accuracy), and its attention to code in the middle of the bundle (mid-context recall). At ~5,000 lines both drop noticeably — triage misclassifies ~15-20% of vectors, and details in mid-bundle files get less scrutiny than files at the start or end. For large codebases, run the skill on logical chunks (per module or contract group) rather than everything at once.
