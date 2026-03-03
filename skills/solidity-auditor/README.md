@@ -4,9 +4,9 @@ A security agent with a simple mission — never let "stupid" vulnerabilities ma
 
 ## What it does
 
-4 parallel agents scan your contracts against 168 attack vectors — reentrancy, access control, token quirks, flash loans, vaults, integer issues, and more. Each agent triages its vectors, then deep-analyzes only what survives. **Deep mode** adds a fifth agent that reasons adversarially from first principles — no checklist, just "find every way to break this."
+Parallel subagents scan your contracts against a curated list of attack vectors. **Deep mode** adds an adversarial agent that reasons from first principles to find what the checklist misses.
 
-Built for **Solidity developers** who want a security check before every commit, **security researchers** looking for fast wins before a manual review, and **anyone building on-chain** who wants an extra pair of eyes. Not a substitute for a formal audit - but the check you should never skip.
+Built for **Solidity devs** who want a security check before every commit, **security researchers** looking for fast wins before a manual review, and **just about anyone** who wants an extra pair of eyes. Not a substitute for a formal audit - but the check you should never skip.
 
 ## Demo
 
